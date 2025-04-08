@@ -26,7 +26,7 @@ import { DeleteSavedJobsService } from './services/delete-saved-jobs.service';
 export class SavedJobsController {
   constructor(
     private readonly savedJobsService: SavedJobsService,
-    private readonly deleteSavedJobs: DeleteSavedJobsService,
+    private readonly deleteSavedJobsService: DeleteSavedJobsService,
   ) {}
 
   @Post()
@@ -46,6 +46,6 @@ export class SavedJobsController {
     @Param() deleteSavedJobDto: DeleteSavedJobDto,
     @LoggedUser() user: UsersEntity,
   ) {
-    return this.deleteSavedJobs.execute(deleteSavedJobDto, user.id);
+    return this.deleteSavedJobsService.execute(deleteSavedJobDto, user.id);
   }
 }

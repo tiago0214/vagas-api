@@ -1,7 +1,7 @@
 import {
-  BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { DeleteSavedJobDto } from '../dtos/delete-saved-job-dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -18,17 +18,17 @@ export class DeleteSavedJobsService {
   async execute(deleteSavedJobDto: DeleteSavedJobDto, userId: string) {
     const { id } = deleteSavedJobDto;
 
-    if (!id) {
-      throw new BadRequestException('Saved job ID must be provided');
-    }
-
     const savedJob = await this.savedJobsRepository.findOne({
       where: { id },
       relations: ['user'],
     });
 
-    if (!savedJob || savedJob.user.id !== userId) {
-      throw new NotFoundException('Saved job not found or unauthorized');
+    if (!savedJob) {
+      throw new NotFoundException();
+    }
+
+    if (savedJob.user.id !== userId) {
+      throw new UnauthorizedException();
     }
 
     await this.savedJobsRepository.remove(savedJob);
